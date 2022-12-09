@@ -30760,6 +30760,11 @@ paths:
       tags:
         - Query
 definitions:
+  alice.checkers.checkers.MsgCreateGameResponse:
+    type: object
+    properties:
+      gameIndex:
+        type: string
   alice.checkers.checkers.Params:
     type: object
     description: Params defines the parameters for the module.
