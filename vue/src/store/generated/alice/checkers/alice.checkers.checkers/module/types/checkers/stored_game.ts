@@ -11,6 +11,10 @@ export interface StoredGame {
   black: string;
   red: string;
   moveCount: number;
+  /** Pertains to the FIFO. Toward head. */
+  beforeIndex: string;
+  /** Pertains to the FIFO. Toward tail. */
+  afterIndex: string;
 }
 
 const baseStoredGame: object = {
@@ -20,6 +24,8 @@ const baseStoredGame: object = {
   black: "",
   red: "",
   moveCount: 0,
+  beforeIndex: "",
+  afterIndex: "",
 };
 
 export const StoredGame = {
@@ -41,6 +47,12 @@ export const StoredGame = {
     }
     if (message.moveCount !== 0) {
       writer.uint32(48).uint64(message.moveCount);
+    }
+    if (message.beforeIndex !== "") {
+      writer.uint32(58).string(message.beforeIndex);
+    }
+    if (message.afterIndex !== "") {
+      writer.uint32(66).string(message.afterIndex);
     }
     return writer;
   },
@@ -69,6 +81,12 @@ export const StoredGame = {
           break;
         case 6:
           message.moveCount = longToNumber(reader.uint64() as Long);
+          break;
+        case 7:
+          message.beforeIndex = reader.string();
+          break;
+        case 8:
+          message.afterIndex = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -110,6 +128,16 @@ export const StoredGame = {
     } else {
       message.moveCount = 0;
     }
+    if (object.beforeIndex !== undefined && object.beforeIndex !== null) {
+      message.beforeIndex = String(object.beforeIndex);
+    } else {
+      message.beforeIndex = "";
+    }
+    if (object.afterIndex !== undefined && object.afterIndex !== null) {
+      message.afterIndex = String(object.afterIndex);
+    } else {
+      message.afterIndex = "";
+    }
     return message;
   },
 
@@ -121,6 +149,9 @@ export const StoredGame = {
     message.black !== undefined && (obj.black = message.black);
     message.red !== undefined && (obj.red = message.red);
     message.moveCount !== undefined && (obj.moveCount = message.moveCount);
+    message.beforeIndex !== undefined &&
+      (obj.beforeIndex = message.beforeIndex);
+    message.afterIndex !== undefined && (obj.afterIndex = message.afterIndex);
     return obj;
   },
 
@@ -155,6 +186,16 @@ export const StoredGame = {
       message.moveCount = object.moveCount;
     } else {
       message.moveCount = 0;
+    }
+    if (object.beforeIndex !== undefined && object.beforeIndex !== null) {
+      message.beforeIndex = object.beforeIndex;
+    } else {
+      message.beforeIndex = "";
+    }
+    if (object.afterIndex !== undefined && object.afterIndex !== null) {
+      message.afterIndex = object.afterIndex;
+    } else {
+      message.afterIndex = "";
     }
     return message;
   },

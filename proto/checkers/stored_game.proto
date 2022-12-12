@@ -10,5 +10,8 @@ message StoredGame {
   string black = 4; 
   string red = 5;
   uint64 moveCount = 6;
+  string beforeIndex = 7; // Pertains to the FIFO. Toward head.
+  string afterIndex = 8; // Pertains to the FIFO. Toward tail.
+
 }
 

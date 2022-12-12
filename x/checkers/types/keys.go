@@ -32,6 +32,8 @@ const (
 	GameRejectedEventType      = "game-rejected"
 	GameRejectedEventCreator   = "creator"
 	GameRejectedEventGameIndex = "game-index"
+
+	NoFifoIndex = "-1"
 )
 
 func KeyPrefix(p string) []byte {
