@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/alice/checkers/x/checkers/rules"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"strconv"
 
 	"github.com/alice/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -57,10 +58,19 @@ func (k msgServer) PlayMove(goCtx context.Context, msg *types.MsgPlayMove) (*typ
 	storedGame.Turn = rules.PieceStrings[game.Turn]
 	k.Keeper.SetStoredGame(ctx, storedGame)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(types.MovePlayedEventType,
+			sdk.NewAttribute(types.MovePlayedEventCreator, msg.Creator),
+			sdk.NewAttribute(types.MovePlayedEventGameIndex, msg.GameIndex),
+			sdk.NewAttribute(types.MovePlayedEventCapturedX, strconv.FormatInt(int64(captured.X), 10)),
+			sdk.NewAttribute(types.MovePlayedEventCapturedY, strconv.FormatInt(int64(captured.Y), 10)),
+			sdk.NewAttribute(types.MovePlayedEventWinner, rules.PieceStrings[game.Winner()]),
+		),
+	)
+
 	return &types.MsgPlayMoveResponse{
 		CapturedX: int32(captured.X),
 		CapturedY: int32(captured.Y),
 		Winner:    rules.PieceStrings[game.Winner()],
 	}, nil
-
 }
