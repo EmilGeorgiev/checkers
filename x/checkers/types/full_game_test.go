@@ -3,6 +3,7 @@ package types_test
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/alice/checkers/x/checkers/rules"
 	"github.com/alice/checkers/x/checkers/testutil"
@@ -18,11 +19,12 @@ const (
 
 func GetStoredGame1() types.StoredGame {
 	return types.StoredGame{
-		Black: alice,
-		Red:   bob,
-		Index: "1",
-		Board: rules.New().String(),
-		Turn:  "b",
+		Black:    alice,
+		Red:      bob,
+		Index:    "1",
+		Board:    rules.New().String(),
+		Turn:     "b",
+		Deadline: "2006-01-02 15:04:05.999999999 +0000 UTC",
 	}
 }
 
@@ -99,4 +101,20 @@ func TestParseGameWrongTurnColor(t *testing.T) {
 func TestGameValidateOk(t *testing.T) {
 	storedGame := GetStoredGame1()
 	require.NoError(t, storedGame.Validate())
+}
+
+func TestParseDeadlineCorrect(t *testing.T) {
+	deadline, err := GetStoredGame1().GetDeadlineAsTime()
+	require.Nil(t, err)
+	require.Equal(t, time.Time(time.Date(2006, time.January, 2, 15, 4, 5, 999999999, time.UTC)), deadline)
+}
+
+func TestParseDeadlineMissingMonth(t *testing.T) {
+	storedGame := GetStoredGame1()
+	storedGame.Deadline = "2006-02 15:04:05.999999999 +0000 UTC"
+	_, err := storedGame.GetDeadlineAsTime()
+	require.EqualError(t,
+		err,
+		"deadline cannot be parsed: 2006-02 15:04:05.999999999 +0000 UTC: parsing time \"2006-02 15:04:05.999999999 +0000 UTC\" as \"2006-01-02 15:04:05.999999999 +0000 UTC\": cannot parse \" 15:04:05.999999999 +0000 UTC\" as \"-\"")
+	require.EqualError(t, storedGame.Validate(), err.Error())
 }

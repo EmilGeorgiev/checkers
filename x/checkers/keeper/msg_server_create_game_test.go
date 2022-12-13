@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	keepertest "github.com/alice/checkers/testutil/keeper"
@@ -56,11 +57,13 @@ func TestCreate1GameHasSaved(t *testing.T) {
 		Red:         carol,
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, game1)
 }
 
 func TestCreate1GameGetAll(t *testing.T) {
 	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Black:   bob,
@@ -77,6 +80,7 @@ func TestCreate1GameGetAll(t *testing.T) {
 		MoveCount:   0,
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, games[0])
 }
 
@@ -191,6 +195,7 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		Red:         carol,
 		BeforeIndex: "-1",
 		AfterIndex:  "2",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(ctx, "2")
 	require.True(t, found2)
@@ -202,6 +207,7 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		Red:         alice,
 		BeforeIndex: "1",
 		AfterIndex:  "3",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, game2)
 	game3, found3 := keeper.GetStoredGame(ctx, "3")
 	require.True(t, found3)
@@ -213,11 +219,13 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		Red:         bob,
 		BeforeIndex: "2",
 		AfterIndex:  "-1",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, game3)
 }
 
 func TestCreate3GamesGetAll(t *testing.T) {
 	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Black:   bob,
@@ -244,6 +252,7 @@ func TestCreate3GamesGetAll(t *testing.T) {
 		MoveCount:   0,
 		BeforeIndex: "-1",
 		AfterIndex:  "2",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, games[0])
 	require.EqualValues(t, types.StoredGame{
 		Index:       "2",
@@ -253,6 +262,7 @@ func TestCreate3GamesGetAll(t *testing.T) {
 		Red:         alice,
 		BeforeIndex: "1",
 		AfterIndex:  "3",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, games[1])
 	require.EqualValues(t, types.StoredGame{
 		Index:       "3",
@@ -262,6 +272,7 @@ func TestCreate3GamesGetAll(t *testing.T) {
 		Red:         bob,
 		BeforeIndex: "2",
 		AfterIndex:  "-1",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, games[2])
 }
 
@@ -297,5 +308,21 @@ func TestCreateGameFarFuture(t *testing.T) {
 		Red:         carol,
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
+		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 	}, game1)
+}
+
+func TestSavedCreatedDeadlineIsParseable(t *testing.T) {
+	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	ctx := sdk.UnwrapSDKContext(context)
+	msgSrvr.CreateGame(context, &types.MsgCreateGame{
+		Creator: alice,
+		Black:   bob,
+		Red:     carol,
+	})
+	game, found := keeper.GetStoredGame(ctx, "1")
+	require.True(t, found)
+	_, err := game.GetDeadlineAsTime()
+	require.Nil(t, err)
+	fmt.Println(game.Deadline)
 }
