@@ -58,6 +58,7 @@ func TestCreate1GameHasSaved(t *testing.T) {
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, game1)
 }
 
@@ -81,6 +82,7 @@ func TestCreate1GameGetAll(t *testing.T) {
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, games[0])
 }
 
@@ -196,6 +198,7 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		BeforeIndex: "-1",
 		AfterIndex:  "2",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(ctx, "2")
 	require.True(t, found2)
@@ -208,6 +211,7 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		BeforeIndex: "1",
 		AfterIndex:  "3",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, game2)
 	game3, found3 := keeper.GetStoredGame(ctx, "3")
 	require.True(t, found3)
@@ -220,6 +224,7 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		BeforeIndex: "2",
 		AfterIndex:  "-1",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, game3)
 }
 
@@ -253,6 +258,7 @@ func TestCreate3GamesGetAll(t *testing.T) {
 		BeforeIndex: "-1",
 		AfterIndex:  "2",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, games[0])
 	require.EqualValues(t, types.StoredGame{
 		Index:       "2",
@@ -263,6 +269,7 @@ func TestCreate3GamesGetAll(t *testing.T) {
 		BeforeIndex: "1",
 		AfterIndex:  "3",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, games[1])
 	require.EqualValues(t, types.StoredGame{
 		Index:       "3",
@@ -273,6 +280,7 @@ func TestCreate3GamesGetAll(t *testing.T) {
 		BeforeIndex: "2",
 		AfterIndex:  "-1",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, games[2])
 }
 
@@ -309,6 +317,7 @@ func TestCreateGameFarFuture(t *testing.T) {
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:      "*",
 	}, game1)
 }
 
