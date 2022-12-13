@@ -41,6 +41,11 @@ const (
 	DeadlineLayout  = "2006-01-02 15:04:05.999999999 +0000 UTC"
 
 	MovePlayedEventBoard = "board"
+
+	GameForfeitedEventType      = "game-forfeited"
+	GameForfeitedEventGameIndex = "game-index"
+	GameForfeitedEventWinner    = "winner"
+	GameForfeitedEventBoard     = "board"
 )
 
 func KeyPrefix(p string) []byte {
