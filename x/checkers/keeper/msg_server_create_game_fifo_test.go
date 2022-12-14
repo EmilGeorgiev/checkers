@@ -9,7 +9,8 @@ import (
 )
 
 func TestCreate3GamesHasSavedFifo(t *testing.T) {
-	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	msgSrvr, keeper, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,

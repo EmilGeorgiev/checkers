@@ -9,7 +9,9 @@ import (
 )
 
 func TestRejectSecondGameHasSavedFifo(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForRejectGame(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForRejectGame(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
@@ -44,7 +46,9 @@ func TestRejectSecondGameHasSavedFifo(t *testing.T) {
 }
 
 func TestRejectMiddleGameHasSavedFifo(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForRejectGame(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForRejectGame(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
@@ -80,6 +84,7 @@ func TestRejectMiddleGameHasSavedFifo(t *testing.T) {
 		AfterIndex:  "3",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:      "*",
+		Wager:       45,
 	}, game1)
 	game3, found := keeper.GetStoredGame(ctx, "3")
 	require.True(t, found)

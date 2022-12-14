@@ -10,7 +10,8 @@ import (
 )
 
 func TestForfeitUnplayed(t *testing.T) {
-	_, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	_, keeper, context, ctrl, _ := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	game1, found := keeper.GetStoredGame(ctx, "1")
 	require.True(t, found)
@@ -42,7 +43,9 @@ func TestForfeitUnplayed(t *testing.T) {
 }
 
 func TestForfeitOlderUnplayed(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
@@ -79,7 +82,8 @@ func TestForfeitOlderUnplayed(t *testing.T) {
 }
 
 func TestForfeit2OldestUnplayedIn1Call(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, _ := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
@@ -130,7 +134,10 @@ func TestForfeit2OldestUnplayedIn1Call(t *testing.T) {
 }
 
 func TestForfeitPlayedOnce(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
+	pay := escrow.ExpectPay(context, bob, 45).Times(1)
+	escrow.ExpectRefund(context, bob, 45).Times(1).After(pay)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -170,7 +177,9 @@ func TestForfeitPlayedOnce(t *testing.T) {
 }
 
 func TestForfeitOlderPlayedOnce(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -215,7 +224,9 @@ func TestForfeitOlderPlayedOnce(t *testing.T) {
 }
 
 func TestForfeit2OldestPlayedOnceIn1Call(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -283,7 +294,9 @@ func TestForfeit2OldestPlayedOnceIn1Call(t *testing.T) {
 }
 
 func TestForfeitPlayedTwice(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -321,6 +334,7 @@ func TestForfeitPlayedTwice(t *testing.T) {
 		AfterIndex:  "-1",
 		Deadline:    oldDeadline,
 		Winner:      "r",
+		Wager:       45,
 	}, game1)
 
 	systemInfo, found := keeper.GetSystemInfo(ctx)
@@ -344,7 +358,9 @@ func TestForfeitPlayedTwice(t *testing.T) {
 }
 
 func TestForfeitOlderPlayedTwice(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -387,6 +403,7 @@ func TestForfeitOlderPlayedTwice(t *testing.T) {
 		AfterIndex:  "-1",
 		Deadline:    oldDeadline,
 		Winner:      "r",
+		Wager:       45,
 	}, game1)
 
 	systemInfo, found := keeper.GetSystemInfo(ctx)
@@ -410,7 +427,9 @@ func TestForfeitOlderPlayedTwice(t *testing.T) {
 }
 
 func TestForfeit2OldestPlayedTwiceIn1Call(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	defer ctrl.Finish()
+	escrow.ExpectAny(context)
 	ctx := sdk.UnwrapSDKContext(context)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -478,6 +497,7 @@ func TestForfeit2OldestPlayedTwiceIn1Call(t *testing.T) {
 		AfterIndex:  "-1",
 		Deadline:    oldDeadline,
 		Winner:      "r",
+		Wager:       45,
 	}, game1)
 
 	game2, found = keeper.GetStoredGame(ctx, "2")

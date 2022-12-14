@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	"github.com/alice/checkers/x/checkers/testutil"
+	"github.com/golang/mock/gomock"
 	"testing"
 
 	keepertest "github.com/alice/checkers/testutil/keeper"
@@ -13,14 +15,26 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServerCreateGame(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context) {
-	k, ctx := keepertest.CheckersKeeper(t)
+func setupMsgServerCreateGame(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context,
+	*gomock.Controller, *testutil.MockBankEscrowKeeper) {
+
+	//k, ctx := keepertest.CheckersKeeper(t)
+	//checkers.InitGenesis(ctx, *k, *types.DefaultGenesis())
+	//return keeper.NewMsgServerImpl(*k), *k, sdk.WrapSDKContext(ctx)
+
+	ctrl := gomock.NewController(t)
+	bankMock := testutil.NewMockBankEscrowKeeper(ctrl)
+	k, ctx := keepertest.CheckersKeeperWithMocks(t, bankMock)
 	checkers.InitGenesis(ctx, *k, *types.DefaultGenesis())
-	return keeper.NewMsgServerImpl(*k), *k, sdk.WrapSDKContext(ctx)
+	server := keeper.NewMsgServerImpl(*k)
+	context := sdk.WrapSDKContext(ctx)
+	return server, *k, context, ctrl, bankMock
+
 }
 
 func TestCreateGame(t *testing.T) {
-	msgServer, _, context := setupMsgServerCreateGame(t)
+	msgServer, _, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	createResponse, err := msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Black:   bob,
@@ -33,7 +47,8 @@ func TestCreateGame(t *testing.T) {
 }
 
 func TestCreate1GameHasSaved(t *testing.T) {
-	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	msgSrvr, keeper, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
@@ -63,7 +78,8 @@ func TestCreate1GameHasSaved(t *testing.T) {
 }
 
 func TestCreate1GameGetAll(t *testing.T) {
-	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	msgSrvr, keeper, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
@@ -87,7 +103,8 @@ func TestCreate1GameGetAll(t *testing.T) {
 }
 
 func TestCreate1GameEmitted(t *testing.T) {
-	msgSrvr, _, context := setupMsgServerCreateGame(t)
+	msgSrvr, _, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Black:   bob,
@@ -105,12 +122,14 @@ func TestCreate1GameEmitted(t *testing.T) {
 			{Key: "game-index", Value: "1"},
 			{Key: "black", Value: bob},
 			{Key: "red", Value: carol},
+			{Key: "wager", Value: "0"},
 		},
 	}, event)
 }
 
 func TestCreateGameRedAddressBad(t *testing.T) {
-	msgServer, _, context := setupMsgServerCreateGame(t)
+	msgServer, _, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	createResponse, err := msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Black:   bob,
@@ -123,7 +142,8 @@ func TestCreateGameRedAddressBad(t *testing.T) {
 }
 
 func TestCreateGameEmptyRedAddress(t *testing.T) {
-	msgServer, _, context := setupMsgServerCreateGame(t)
+	msgServer, _, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	createResponse, err := msgServer.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Black:   bob,
@@ -136,7 +156,8 @@ func TestCreateGameEmptyRedAddress(t *testing.T) {
 }
 
 func TestCreate3Games(t *testing.T) {
-	msgSrvr, _, context := setupMsgServerCreateGame(t)
+	msgSrvr, _, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
 		Black:   bob,
@@ -163,7 +184,8 @@ func TestCreate3Games(t *testing.T) {
 }
 
 func TestCreate3GamesHasSaved(t *testing.T) {
-	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	msgSrvr, keeper, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
@@ -229,7 +251,8 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 }
 
 func TestCreate3GamesGetAll(t *testing.T) {
-	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	msgSrvr, keeper, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
@@ -285,7 +308,8 @@ func TestCreate3GamesGetAll(t *testing.T) {
 }
 
 func TestCreateGameFarFuture(t *testing.T) {
-	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	msgSrvr, keeper, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	systemInfo, found := keeper.GetSystemInfo(ctx)
 	systemInfo.NextId = 1024
@@ -322,7 +346,8 @@ func TestCreateGameFarFuture(t *testing.T) {
 }
 
 func TestSavedCreatedDeadlineIsParseable(t *testing.T) {
-	msgSrvr, keeper, context := setupMsgServerCreateGame(t)
+	msgSrvr, keeper, context, ctrl, _ := setupMsgServerCreateGame(t)
+	defer ctrl.Finish()
 	ctx := sdk.UnwrapSDKContext(context)
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: alice,
