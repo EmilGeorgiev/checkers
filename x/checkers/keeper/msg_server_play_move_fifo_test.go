@@ -48,6 +48,7 @@ func TestPlayMove2Games1MoveHasSavedFifo(t *testing.T) {
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:      "*",
 		Wager:       45,
+		Denom:       "stake",
 	}, game1)
 	game2, found := keeper.GetStoredGame(ctx, "2")
 	require.True(t, found)
@@ -74,6 +75,8 @@ func TestPlayMove2Games2MovesHasSavedFifo(t *testing.T) {
 		Creator: bob,
 		Black:   carol,
 		Red:     alice,
+		Wager:   45,
+		Denom:   "stake",
 	})
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -113,6 +116,7 @@ func TestPlayMove2Games2MovesHasSavedFifo(t *testing.T) {
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:      "*",
 		Wager:       45,
+		Denom:       "stake",
 	}, game1)
 	game2, found := keeper.GetStoredGame(ctx, "2")
 	require.True(t, found)
@@ -127,5 +131,7 @@ func TestPlayMove2Games2MovesHasSavedFifo(t *testing.T) {
 		AfterIndex:  "-1",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:      "*",
+		Wager:       45,
+		Denom:       "stake",
 	}, game2)
 }

@@ -17,11 +17,6 @@ import (
 
 func setupMsgServerCreateGame(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context,
 	*gomock.Controller, *testutil.MockBankEscrowKeeper) {
-
-	//k, ctx := keepertest.CheckersKeeper(t)
-	//checkers.InitGenesis(ctx, *k, *types.DefaultGenesis())
-	//return keeper.NewMsgServerImpl(*k), *k, sdk.WrapSDKContext(ctx)
-
 	ctrl := gomock.NewController(t)
 	bankMock := testutil.NewMockBankEscrowKeeper(ctrl)
 	k, ctx := keepertest.CheckersKeeperWithMocks(t, bankMock)
@@ -39,6 +34,8 @@ func TestCreateGame(t *testing.T) {
 		Creator: alice,
 		Black:   bob,
 		Red:     carol,
+		Wager:   45,
+		Denom:   "stake",
 	})
 	require.Nil(t, err)
 	require.EqualValues(t, types.MsgCreateGameResponse{
@@ -85,6 +82,8 @@ func TestCreate1GameGetAll(t *testing.T) {
 		Creator: alice,
 		Black:   bob,
 		Red:     carol,
+		Wager:   45,
+		Denom:   "stake",
 	})
 	games := keeper.GetAllStoredGame(sdk.UnwrapSDKContext(context))
 	require.Len(t, games, 1)
@@ -99,6 +98,8 @@ func TestCreate1GameGetAll(t *testing.T) {
 		AfterIndex:  "-1",
 		Deadline:    types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:      "*",
+		Wager:       45,
+		Denom:       "stake",
 	}, games[0])
 }
 
@@ -109,6 +110,7 @@ func TestCreate1GameEmitted(t *testing.T) {
 		Creator: alice,
 		Black:   bob,
 		Red:     carol,
+		Denom:   "stake",
 	})
 	ctx := sdk.UnwrapSDKContext(context)
 	require.NotNil(t, ctx)
@@ -123,6 +125,7 @@ func TestCreate1GameEmitted(t *testing.T) {
 			{Key: "black", Value: bob},
 			{Key: "red", Value: carol},
 			{Key: "wager", Value: "0"},
+			{Key: "denom", Value: "stake"},
 		},
 	}, event)
 }
@@ -177,11 +180,15 @@ func TestCreate3Games(t *testing.T) {
 		Creator: alice,
 		Black:   bob,
 		Red:     carol,
+		Wager:   45,
+		Denom:   "stake",
 	})
 	createResponse2, err2 := msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
 		Black:   carol,
 		Red:     alice,
+		Wager:   46,
+		Denom:   "coin",
 	})
 	require.Nil(t, err2)
 	require.EqualValues(t, types.MsgCreateGameResponse{
@@ -191,6 +198,8 @@ func TestCreate3Games(t *testing.T) {
 		Creator: carol,
 		Black:   alice,
 		Red:     bob,
+		Wager:   47,
+		Denom:   "gold",
 	})
 	require.Nil(t, err3)
 	require.EqualValues(t, types.MsgCreateGameResponse{
