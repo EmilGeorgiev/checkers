@@ -3,7 +3,7 @@ package testutil
 import (
 	"context"
 
-	"github.com/alice/checkers/x/checkers/types"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/golang/mock/gomock"
 )

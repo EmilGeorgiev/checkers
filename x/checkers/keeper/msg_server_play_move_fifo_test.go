@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/alice/checkers/x/checkers/types"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )

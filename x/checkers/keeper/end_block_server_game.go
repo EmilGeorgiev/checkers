@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/alice/checkers/x/checkers/rules"
-	"github.com/alice/checkers/x/checkers/types"
+	"github.com/EmilGeorgiev/checkers/x/checkers/rules"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

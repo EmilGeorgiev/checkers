@@ -3,9 +3,9 @@ package keeper
 import (
 	"testing"
 
-	"github.com/alice/checkers/x/checkers/keeper"
-	"github.com/alice/checkers/x/checkers/testutil"
-	"github.com/alice/checkers/x/checkers/types"
+	"github.com/EmilGeorgiev/checkers/x/checkers/keeper"
+	"github.com/EmilGeorgiev/checkers/x/checkers/testutil"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"

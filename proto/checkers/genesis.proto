@@ -7,7 +7,7 @@ import "checkers/system_info.proto";
 import "checkers/stored_game.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
-option go_package = "github.com/alice/checkers/x/checkers/types";
+option go_package = "github.com/EmilGeorgiev/checkers/x/checkers/types";
 
 // GenesisState defines the checkers module's genesis state.
 message GenesisState {

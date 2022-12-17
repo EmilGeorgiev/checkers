@@ -3,14 +3,14 @@ package keeper_test
 import (
 	"context"
 	"fmt"
-	"github.com/alice/checkers/x/checkers/testutil"
+	"github.com/EmilGeorgiev/checkers/x/checkers/testutil"
 	"github.com/golang/mock/gomock"
 	"testing"
 
-	keepertest "github.com/alice/checkers/testutil/keeper"
-	"github.com/alice/checkers/x/checkers"
-	"github.com/alice/checkers/x/checkers/keeper"
-	"github.com/alice/checkers/x/checkers/types"
+	keepertest "github.com/EmilGeorgiev/checkers/testutil/keeper"
+	"github.com/EmilGeorgiev/checkers/x/checkers"
+	"github.com/EmilGeorgiev/checkers/x/checkers/keeper"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )

@@ -1,13 +1,13 @@
 package keeper_test
 
 import (
-	"github.com/alice/checkers/x/checkers/testutil"
+	"github.com/EmilGeorgiev/checkers/x/checkers/testutil"
 	"testing"
 	"time"
 
-	checkersapp "github.com/alice/checkers/app"
-	"github.com/alice/checkers/x/checkers/keeper"
-	"github.com/alice/checkers/x/checkers/types"
+	checkersapp "github.com/EmilGeorgiev/checkers/app"
+	"github.com/EmilGeorgiev/checkers/x/checkers/keeper"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"

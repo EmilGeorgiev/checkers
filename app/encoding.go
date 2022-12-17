@@ -1,7 +1,7 @@
 package app
 
 import (
-	appparams "github.com/alice/checkers/app/params"
+	appparams "github.com/EmilGeorgiev/checkers/app/params"
 	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 )

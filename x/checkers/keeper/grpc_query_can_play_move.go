@@ -3,10 +3,10 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/alice/checkers/x/checkers/rules"
+	"github.com/EmilGeorgiev/checkers/x/checkers/rules"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/alice/checkers/x/checkers/types"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -3,7 +3,7 @@ package types
 import (
 	"testing"
 
-	"github.com/alice/checkers/testutil/sample"
+	"github.com/EmilGeorgiev/checkers/testutil/sample"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )

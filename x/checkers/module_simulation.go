@@ -3,9 +3,9 @@ package checkers
 import (
 	"math/rand"
 
-	"github.com/alice/checkers/testutil/sample"
-	checkerssimulation "github.com/alice/checkers/x/checkers/simulation"
-	"github.com/alice/checkers/x/checkers/types"
+	"github.com/EmilGeorgiev/checkers/testutil/sample"
+	checkerssimulation "github.com/EmilGeorgiev/checkers/x/checkers/simulation"
+	"github.com/EmilGeorgiev/checkers/x/checkers/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
