@@ -1,5 +1,6 @@
 # checkers
 **checkers** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
+It is a companion project of the Cosmos SDK tutorials. Its object is to show various features of the Cosmos SDK and of Ignite.
 
 ## Get started
 
